@@ -518,3 +518,124 @@ class OutgoingWebhook(object):
 	@property
 	def verbose(self):
 		return self.__verbose
+
+
+class Bot(object):
+	""" Class definition for a BOT with outgoing webhook capabilities. """
+
+	def __init__(self, data, token, verbose=False):
+		""" Initiate the object. """
+		self.__token = token
+		self.__user_id = data['user_id']
+		self.__username = data['username']
+		self.__post_id = data['post_id']
+		self.__timestamp = data['timestamp']
+		self.__text = data['text']
+		self.__verbose = verbose
+
+	def __str__(self):
+		""" Define how the print() method should print the object. """
+		object_type = str(type(self))
+		return object_type + ": " + str(self.as_dict())
+
+	def __repr__(self):
+		""" Define how the object is represented when output to console. """
+
+		class_name = type(self).__name__
+		token = f"token = '{self.token}'"
+		user_id = f"user_id = {self.user_id}"
+		username = f"username = '{self.username}'"
+		post_id = f"post_id = {self.post_id}"
+		timestamp = f"timestamp = {self.timestamp}"
+		text = f"text = '{self.text}'"
+		verbose = f"verbose = {self.verbose}"
+
+		return f"{class_name}({token}, {user_id}, {username}, {post_id}, {timestamp}, {text}, {verbose})"
+
+	def authenticate(self, token):
+		""" Compare the client and server API token. """
+		self.__client_token = token
+		return token == self.__token
+
+	def as_dict(self):
+		""" Return the object properties in a dictionary. """
+		return {
+			'token': self.token,
+			'user_id': self.user_id,
+			'username': self.username,
+			'post_id': self.post_id,
+			'timestamp': self.timestamp,
+			'text': self.text,
+			'verbose': self.verbose,
+		}
+
+	def createResponse(self, response_text, file_url=None):
+		""" Create a response message to send back to the channel. """
+		payload_data = {
+			'token': self.__token,
+			'text': response_text,
+			'user_id': self.__user_id,
+			'username': self.__username,
+		}
+		
+		# Check if there is a URL to include in the request
+		if file_url:
+			payload_data['file_url'] = file_url
+
+		return json.dumps(payload_data)
+
+	@property
+	def token(self):
+		return self.__token
+
+	@token.setter
+	def token(self, token):
+		self.__token = token
+
+	@property
+	def user_id(self):
+		return self.__user_id
+
+	@user_id.setter
+	def user_id(self, user_id):
+		self.__user_id = user_id
+
+	@property
+	def username(self):
+		return self.__username
+
+	@username.setter
+	def username(self, username):
+		self.__username = username
+
+	@property
+	def post_id(self):
+		return self.__post_id
+
+	@post_id.setter
+	def post_id(self, post_id):
+		self.__post_id = post_id
+
+	@property
+	def timestamp(self):
+		return self.__timestamp
+
+	@timestamp.setter
+	def timestamp(self, timestamp):
+		self.__timestamp = timestamp
+
+	@property
+	def text(self):
+		return self.__text
+
+	@text.setter
+	def text(self, text):
+		self.__text = text
+
+	@property
+	def verbose(self):
+		return self.__verbose
+
+	@verbose.setter
+	def verbose(self, verbose):
+		self.__verbose = verbose
